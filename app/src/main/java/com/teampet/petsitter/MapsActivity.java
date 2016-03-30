@@ -24,6 +24,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
     }
 
+    private int shiva = 0;
 
     /**
      * Manipulates the map once available.
