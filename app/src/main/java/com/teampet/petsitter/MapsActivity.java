@@ -173,7 +173,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
     }
-    //testing  - Quang Nguyen
+    //testing 2  - Quang Nguyen
     //stop updates
     public void onStop() {
         super.onStop();
