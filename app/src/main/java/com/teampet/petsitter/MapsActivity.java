@@ -161,13 +161,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
         // Add a marker at Bentley and move the camera
-        mMap.addMarker(new MarkerOptions()
-                .position(BENTLEY)
-                .title("Bentley University")
-                .snippet("Population: 5,000")
-                );
-
-        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(BENTLEY, zoom));
 
         //choose map type
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
@@ -223,12 +216,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             double latitude = loc.getLatitude();
             double longitude = loc.getLongitude();
 
-            String Text = "My current location is: " +
-                    "Latitude = " + latitude + "Longitude = " + longitude;
-
-            Toast.makeText(getApplicationContext(), Text, Toast.LENGTH_SHORT)
-                    .show();
-
             LatLng position = new LatLng(latitude, longitude);
 
             mMap.clear();
@@ -259,13 +246,25 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         // eventually this will get from the database for now fake til we make it
         ArrayList<Location> nearbyLocations = new ArrayList<>();
         Location recentLoc = loc;
-        for(int i=0; i<5; i++){
-            Location sitter = new Location(recentLoc);
-            sitter.setLatitude(sitter.getLatitude() - 0.002);
-            sitter.setLongitude(sitter.getLongitude() - 0.002);
-            nearbyLocations.add(sitter);
-            recentLoc = sitter;
-        }
+//        for(int i=0; i<5; i++){
+//            Location sitter = new Location(recentLoc);
+//            sitter.setLatitude(sitter.getLatitude() - 0.002);
+//            sitter.setLongitude(sitter.getLongitude() - 0.002);
+//            nearbyLocations.add(sitter);
+//            recentLoc = sitter;
+//        }
+        Location sitter = new Location(recentLoc);
+        sitter.setLatitude(sitter.getLatitude() - 0.006);
+        nearbyLocations.add(sitter);
+        sitter = new Location(recentLoc);
+        sitter.setLatitude(sitter.getLatitude() + 0.006);
+        nearbyLocations.add(sitter);
+        sitter = new Location(recentLoc);
+        sitter.setLongitude(sitter.getLongitude() - 0.006);
+        nearbyLocations.add(sitter);
+        sitter = new Location(recentLoc);
+        sitter.setLongitude(sitter.getLongitude() + 0.006);
+        nearbyLocations.add(sitter);
 
 
         for(Location x : nearbyLocations ){
