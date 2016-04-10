@@ -278,7 +278,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
     }
-
+    //testing 2  - Quang Nguyen
     //stop updates
     public void onStop() {
         super.onStop();
