@@ -1,9 +1,11 @@
 package com.teampet.petsitter;
 
+import java.io.Serializable;
+
 /**
  * Created by Z on 4/10/2016.
  */
-public class Pet {
+public class Pet implements Serializable{
     private String ID_pet;
     private String Name;
     private String Color;

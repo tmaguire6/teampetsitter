@@ -22,9 +22,10 @@ import java.util.Locale;
  */
 public class NearbySitters extends AppCompatActivity implements TextToSpeech.OnInitListener{
     private ListView listView;
-    private ArrayList<Object> list;
     private ArrayList<String> stringList;
+    private ArrayList<Petsitter> sitters;
     private ArrayAdapter<String> adapter;
+
 
     private TextToSpeech speaker;
     private static final String TAG = "TextToSpeech";
@@ -35,13 +36,15 @@ public class NearbySitters extends AppCompatActivity implements TextToSpeech.OnI
         setContentView(R.layout.content_nearbytest);
 
         listView = (ListView) findViewById(R.id.listView);
-        //listView.setOnItemClickListener(this); //set listener to widget
-        list = new ArrayList<>();
-        SQLHelper helper = new SQLHelper();
+
 
         Intent intent = getIntent();
-        stringList = intent.getStringArrayListExtra("sitters");
-        
+        sitters = (ArrayList<Petsitter>)intent.getSerializableExtra("sitters");
+        stringList = new ArrayList<>();
+        for(Petsitter sitter : sitters ){
+            stringList.add(sitter.getFname() + " " + sitter.getLname() + "\n" + sitter.getPhone());
+        }
+
         adapter = new ArrayAdapter<>(this,R.layout.activity_sitter_list_item, stringList);
         listView.setAdapter(adapter); // connect listView to ArrayAdapter
 

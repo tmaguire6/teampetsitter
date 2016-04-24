@@ -1,11 +1,12 @@
 package com.teampet.petsitter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by Z on 4/10/2016.
  */
-public class Petsitter {
+public class Petsitter implements Serializable{
     private String ID_sitter;
     private String Fname;
     private String Lname;

@@ -1,5 +1,6 @@
 package com.teampet.petsitter;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -36,18 +37,40 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 
+import java.util.ArrayList;
 
 
 public class Profile extends AppCompatActivity {
 
     private ImageView ImView;
     Button buttonSend;
+    Petsitter sitter;
+    Petowner owner;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_profiletest);
         buttonSend = (Button) findViewById(R.id.buttonSend);
 
+//
+//                } catch (Exception e) {
+//                    Toast.makeText(getApplicationContext(),
+//                            "SMS failed, please try again later!",
+//                            Toast.LENGTH_SHORT).show();
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+        Intent intent = getIntent();
+        SQLHelper.TableType type = (SQLHelper.TableType)intent.getSerializableExtra("type");
+        switch (type){
+            case Sitter:
+                sitter = (Petsitter)intent.getSerializableExtra("sitter");
+                break;
+            case Owner:
+                owner = (Petowner)intent.getSerializableExtra("owner");
+                break;
+        }
         buttonSend.setOnClickListener(new View.OnClickListener() {
 
             @Override

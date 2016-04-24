@@ -54,7 +54,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final int uniqueNotificationID = 12345;
     private ImageView ImView;
     Button buttonSend;
-    private ArrayList<String> foundSitters;
+    private ArrayList<Petsitter> foundSitters;
+    private Petowner owner = new Petowner("12345", "James", "Pepe", "jpepe@bentley.edu", "(555) 555-5555", "Some Background Nonsense", new String[]{""});
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,12 +154,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (id == R.id.nav_profile) {
             // Handle the profile action
             Intent profile = new Intent(MapsActivity.this, Profile.class);
+            // todo: fix this to actually grab correct sitter
+            profile.putExtra("type", SQLHelper.TableType.Owner);
+            profile.putExtra("owner", owner);
             startActivity(profile);
 
         } else if (id == R.id.nav_nearbySitters) {
             // Handle the nearby sitters action
             Intent nearbySitters = new Intent(MapsActivity.this, NearbySitters.class);
             nearbySitters.putExtra("sitters", foundSitters);
+            nearbySitters.putExtra("type", SQLHelper.TableType.Sitter);
             startActivity(nearbySitters);
 
         }else if (id == R.id.nav_history) {
@@ -224,19 +229,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         String title = m.getTitle();
                         String snip = m.getSnippet();
                         Toast.makeText(getApplicationContext(), title + "\n" + snip, Toast.LENGTH_LONG).show();
+                        // Handle the profile action
+                        Intent profile = new Intent(MapsActivity.this, Profile.class);
+                        // todo: fix this to actually grab correct sitter
+                        profile.putExtra("sitter", foundSitters.get(0));
+                        profile.putExtra("type", SQLHelper.TableType.Sitter);
+                        startActivity(profile);
+
                         return true;
                     }
                 }
         );
 
-        //set listener on map long tap
-        mMap.setOnMapLongClickListener(
-                new GoogleMap.OnMapLongClickListener() {
-                    public void onMapLongClick(LatLng point) {
-                        Toast.makeText(getApplicationContext(), "Long Tap", Toast.LENGTH_LONG).show();
-                    }
-                }
-        );
 
         //enable map tracking of current location
         try {
@@ -349,7 +353,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             // add sitter to list for use in other activities
             Petsitter sitter = (Petsitter)sitters.get(randomPosition);
 
-            foundSitters.add(sitter.getFname() + " " + sitter.getLname() + "\n" + sitter.getPhone());
+            foundSitters.add(sitter);
             mMap.addMarker(new MarkerOptions()
                             .position(new LatLng(x.getLatitude(), x.getLongitude()))
                             .title(sitter.getFname() + " " + sitter.getLname())
@@ -358,7 +362,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             );
         }
         dialog.dismiss();
-        locManager.removeUpdates(locListener);
+
+        try {
+            locManager.removeUpdates(locListener);
+        }
+        catch(SecurityException e){
+            Log.e("LocationException", e.getMessage());
+        }
+
 
     }
     //testing 2  - Quang Nguyen
