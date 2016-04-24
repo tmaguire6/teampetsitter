@@ -117,7 +117,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             Intent profile = new Intent(MapsActivity.this, Profile.class);
             startActivity(profile);
 
-        } else if (id == R.id.nav_history) {
+        } else if (id == R.id.nav_nearbySitters) {
+            // Handle the nearby sitters action
+            Intent nearbySitters = new Intent(MapsActivity.this, NearbySitters.class);
+            startActivity(nearbySitters);
+
+        }else if (id == R.id.nav_history) {
             // Handle the history action
             Intent history = new Intent(MapsActivity.this, History.class);
             startActivity(history);
