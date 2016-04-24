@@ -1,6 +1,7 @@
 package com.teampet.petsitter;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
@@ -37,13 +38,10 @@ public class NearbySitters extends AppCompatActivity implements TextToSpeech.OnI
         //listView.setOnItemClickListener(this); //set listener to widget
         list = new ArrayList<>();
         SQLHelper helper = new SQLHelper();
-        //
-        list = helper.getDatabaseValues("select * from petsitter;", SQLHelper.TableType.Sitter);
-        stringList = new ArrayList<>();
-        for(Object x : list ){
-            Petsitter sitter = (Petsitter)x;
-            stringList.add(sitter.getFname() + " " + sitter.getLname() + "\n" + sitter.getPhone() );
-        }
+
+        Intent intent = getIntent();
+        stringList = intent.getStringArrayListExtra("sitters");
+        
         adapter = new ArrayAdapter<>(this,R.layout.activity_sitter_list_item, stringList);
         listView.setAdapter(adapter); // connect listView to ArrayAdapter
 

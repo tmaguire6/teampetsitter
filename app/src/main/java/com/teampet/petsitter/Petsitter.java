@@ -154,6 +154,12 @@ public class Petsitter {
     public Petsitter(String ID_sitter, String firstName, String lastName, String email, String phone, String background, String[] pictureUrls){
         super();
         this.ID_sitter = ID_sitter;
+        this.Fname = firstName;
+        this.Lname = lastName;
+        this.Email = email;
+        this.Phone = phone;
+
+
         this.Lname = Lname;
     }
 

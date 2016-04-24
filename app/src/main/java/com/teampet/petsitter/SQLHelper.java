@@ -130,7 +130,7 @@ public class SQLHelper {
                     String sitterPhone = result.getString(KEY_NAME_PHONE);
                     String sitterEmail = result.getString(KEY_NAME_EMAIL);
 
-                    dataValues.add(new Petsitter(sitterId, sitterFirstName, sitterLastName, sitterPhone, sitterEmail, "", new String[]{""}));
+                    dataValues.add(new Petsitter(sitterId, sitterFirstName, sitterLastName, sitterEmail, sitterPhone, "", new String[]{""}));
 
                     break;
 

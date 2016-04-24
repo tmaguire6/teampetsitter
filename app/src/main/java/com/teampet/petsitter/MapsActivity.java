@@ -54,6 +54,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final int uniqueNotificationID = 12345;
     private ImageView ImView;
     Button buttonSend;
+    private ArrayList<String> foundSitters;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,6 +158,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         } else if (id == R.id.nav_nearbySitters) {
             // Handle the nearby sitters action
             Intent nearbySitters = new Intent(MapsActivity.this, NearbySitters.class);
+            nearbySitters.putExtra("sitters", foundSitters);
             startActivity(nearbySitters);
 
         }else if (id == R.id.nav_history) {
@@ -335,7 +337,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         low = 0;
         high = sitters.size();
         ArrayList<Integer> usedPositions = new ArrayList<>();
-
+        foundSitters = new ArrayList<>();
 
         for(Location x : nearbyLocations ){
             // Add a marker at recent location
@@ -344,7 +346,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 randomPosition = r.nextInt(high-low) + low;
             }
             usedPositions.add(randomPosition);
+            // add sitter to list for use in other activities
             Petsitter sitter = (Petsitter)sitters.get(randomPosition);
+
+            foundSitters.add(sitter.getFname() + " " + sitter.getLname() + "\n" + sitter.getPhone());
             mMap.addMarker(new MarkerOptions()
                             .position(new LatLng(x.getLatitude(), x.getLongitude()))
                             .title(sitter.getFname() + " " + sitter.getLname())
