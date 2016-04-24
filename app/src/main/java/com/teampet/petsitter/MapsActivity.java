@@ -1,5 +1,6 @@
 package com.teampet.petsitter;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
@@ -33,6 +34,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener{
 
@@ -41,6 +43,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleMap mMap;
     private static final LatLng BENTLEY = new LatLng(42.3889167, -71.2208033);
     private static final float zoom = 14.0f;
+    private ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +68,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        dialog = ProgressDialog.show(this, "Locating you...",
+                "Working....", true);
 
     }
 
@@ -243,38 +249,62 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }// End MyLocationListener
 
     private void findAndPlaceSitters(Location loc) {
-        // eventually this will get from the database for now fake til we make it
+        // Obviously in real life, these would have fixed locations. To make this easier to use with our fake data, assign them
+        // locations that place them roughly around the current location instead.
+        SQLHelper helper = new SQLHelper();
+        ArrayList<Object> sitters = helper.getDatabaseValues("select * from petsitter;", SQLHelper.TableType.Sitter);
         ArrayList<Location> nearbyLocations = new ArrayList<>();
-        Location recentLoc = loc;
-//        for(int i=0; i<5; i++){
-//            Location sitter = new Location(recentLoc);
-//            sitter.setLatitude(sitter.getLatitude() - 0.002);
-//            sitter.setLongitude(sitter.getLongitude() - 0.002);
-//            nearbyLocations.add(sitter);
-//            recentLoc = sitter;
-//        }
-        Location sitter = new Location(recentLoc);
-        sitter.setLatitude(sitter.getLatitude() - 0.006);
-        nearbyLocations.add(sitter);
-        sitter = new Location(recentLoc);
-        sitter.setLatitude(sitter.getLatitude() + 0.006);
-        nearbyLocations.add(sitter);
-        sitter = new Location(recentLoc);
-        sitter.setLongitude(sitter.getLongitude() - 0.006);
-        nearbyLocations.add(sitter);
-        sitter = new Location(recentLoc);
-        sitter.setLongitude(sitter.getLongitude() + 0.006);
-        nearbyLocations.add(sitter);
+
+        // get a random number between 2 and 12, this will be divided by 1000 to get a latitude, then we'll get another one for longitude, then a third to determine if it will be plus or minus
+
+        Random r = new Random();
+        int low = 2;
+        int high = 12;
+        int result = r.nextInt(high - low) + low;
+
+        for(int i=0; i<5; i++){
+            double latitudeDiff = ((double)(r.nextInt(high-low) + low)) / 1000;
+            double longitudeDiff = ((double)(r.nextInt(high-low) + low)) / 1000;
+            boolean minus = false;
+            Location locToAdd = new Location(loc);
+            // if even, minus, else plus
+            if(((double)(r.nextInt(high-low) + low)) % 2 == 0){
+                minus = true;
+            }
+            if(minus){
+                locToAdd.setLatitude(locToAdd.getLatitude() - latitudeDiff);
+                locToAdd.setLongitude(locToAdd.getLongitude() - longitudeDiff);
+            }
+            else{
+                locToAdd.setLatitude(locToAdd.getLatitude() + latitudeDiff);
+                locToAdd.setLongitude(locToAdd.getLongitude() + longitudeDiff);
+            }
+            nearbyLocations.add(locToAdd);
+        }
+        // now that we've gathered our random locations
+        // loop through them, grab a random pet sitter from our list, and use it to create a marker
+        low = 0;
+        high = sitters.size();
+        ArrayList<Integer> usedPositions = new ArrayList<>();
 
 
         for(Location x : nearbyLocations ){
             // Add a marker at recent location
+            int randomPosition = r.nextInt(high-low) + low;
+            while(usedPositions.contains(randomPosition)){
+                randomPosition = r.nextInt(high-low) + low;
+            }
+            usedPositions.add(randomPosition);
+            Petsitter sitter = (Petsitter)sitters.get(randomPosition);
             mMap.addMarker(new MarkerOptions()
                             .position(new LatLng(x.getLatitude(), x.getLongitude()))
-                            .title("This will eventually be the name from the database")
+                            .title(sitter.getFname() + " " + sitter.getLname())
+                            .snippet(sitter.getEmail())
 
             );
         }
+        dialog.dismiss();
+        locManager.removeUpdates(locListener);
 
     }
     //testing 2  - Quang Nguyen
