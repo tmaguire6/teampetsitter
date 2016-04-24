@@ -1,5 +1,6 @@
 package com.teampet.petsitter;
 
+
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
@@ -18,11 +19,12 @@ import java.util.Locale;
 /**
  * Created by Shiv on 4/24/2016.
  */
-public class NearbySitters extends AppCompatActivity{
+public class NearbySitters extends AppCompatActivity implements TextToSpeech.OnInitListener{
     private ListView listView;
-    private ArrayList<String> list;
+    private ArrayList<Object> list;
+    private ArrayList<String> stringList;
     private ArrayAdapter<String> adapter;
-    private Thread readList;
+
     private TextToSpeech speaker;
     private static final String TAG = "TextToSpeech";
     //private int pos; //store the list position in the arraylist listview when user clicks on the list
@@ -34,62 +36,30 @@ public class NearbySitters extends AppCompatActivity{
         listView = (ListView) findViewById(R.id.listView);
         //listView.setOnItemClickListener(this); //set listener to widget
         list = new ArrayList<>();
-        adapter = new ArrayAdapter<>(this,R.layout.activity_sitter_list_item, list);
+        SQLHelper helper = new SQLHelper();
+        //
+        list = helper.getDatabaseValues("select * from petsitter;", SQLHelper.TableType.Sitter);
+        stringList = new ArrayList<>();
+        for(Object x : list ){
+            Petsitter sitter = (Petsitter)x;
+            stringList.add(sitter.getFname() + " " + sitter.getLname() + "\n" + sitter.getPhone() );
+        }
+        adapter = new ArrayAdapter<>(this,R.layout.activity_sitter_list_item, stringList);
         listView.setAdapter(adapter); // connect listView to ArrayAdapter
-        readList = new Thread(background);
-        readList.start();
+
+        speaker = new TextToSpeech(this, this);
+
+
+
     }
 
-    Runnable background = new Runnable() {
-        @Override
-        public void run() {
-            String URL = "jdbc:mysql://frodo.bentley.edu:3306/petfinderdb";
-            String username = "ziyangli";
-            String password = "cs680";
 
-            try { //load driver into VM memory
-                Class.forName("com.mysql.jdbc.Driver");
-            } catch (ClassNotFoundException e) {
-                Log.e("JDBC", "Did not load driver");
-
-            }
-            Statement stmt = null;
-            Connection con = null;
-            try { //create connection to database
-                con = DriverManager.getConnection(
-                        URL,
-                        username,
-                        password);
-                stmt = con.createStatement();
-                ResultSet result = stmt.executeQuery(
-                        "SELECT Fname, Lname, Phone FROM petsitter ;");
-                while (result.next()){
-                    String FirstName = result.getString("Fname");
-                    String LastName = result.getString("Lname");
-                    String phone = result.getString ("Phone");
-                    list.add(FirstName + " " + LastName + "\n" + phone);
-                }
-                //speaker
-                if(speaker.isSpeaking()){
-                    Log.i(TAG, "Speaker Speaking");
-                    speaker.stop();
-                    // else start speech
-                } else {
-                    Log.i(TAG, "Speaker Not Already Speaking");
-                    speak(list.size()+" pet sitters are found near you");}
-                //close connection
-                con.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    };
 
     //--------------------------------------------------------------------------------------------//
     //speaker - txt to voice
     public void speak(String output){
         //speaker.speak(output, TextToSpeech.QUEUE_FLUSH, null);  //for APIs before 21
-        //speaker.speak(output, TextToSpeech.QUEUE_FLUSH, null, "Id 0");
+        speaker.speak(output, TextToSpeech.QUEUE_FLUSH, null, "Id 0");
     }
     public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
@@ -103,7 +73,7 @@ public class NearbySitters extends AppCompatActivity{
                 Log.e(TAG, "Language is not available.");
             } else {
                 // The TTS engine has been successfully initialized
-                speak("Please enter your list item below");
+                speak(stringList.size()+" pet sitters are found near you");
                 Log.i(TAG, "TTS Initialization successful.");
             }
         } else {
