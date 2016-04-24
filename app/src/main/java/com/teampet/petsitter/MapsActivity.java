@@ -1,14 +1,20 @@
 package com.teampet.petsitter;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -44,6 +50,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final LatLng BENTLEY = new LatLng(42.3889167, -71.2208033);
     private static final float zoom = 14.0f;
     private ProgressDialog dialog;
+    NotificationCompat.Builder notification;
+    private static final int uniqueNotificationID = 12345;
+    private ImageView ImView;
+    Button buttonSend;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +81,33 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         dialog = ProgressDialog.show(this, "Locating you...",
                 "Working....", true);
+
+        notification = new NotificationCompat.Builder(this);
+        notification.setAutoCancel(true);
+
+        //Build the notification
+        notification.setSmallIcon(R.drawable.notificationpic);
+        notification.setTicker("You have a new message on PetSitter");
+        notification.setWhen(System.currentTimeMillis());
+        notification.setContentTitle("MESSAGE!!");
+        notification.setContentText("Body text for message");
+        //Creates an explicit intent for an Activity in app
+        Intent intent = new Intent(this, MapsActivity.class);
+        //stack builder object will contain an artificial back stack for the started activity
+        //Ensures that navigating backward from Activity leads out of app to Home screen
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        //Adds the back stack for the Intent (but not Intent itself)
+        stackBuilder.addParentStack(MapsActivity.class);
+        //Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(intent);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        notification.setContentIntent(pendingIntent);
+
+        //Builds notification and sends out notification
+        NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        nm.notify(uniqueNotificationID, notification.build());
+
+
 
     }
 
@@ -210,8 +247,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             //Register for location updates using the named provider, and a pending intent.
             //10 second minimum interval between updates, 0 meters minimum distance between updates
-            locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0,
-                    locListener);
+//            locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0,
+//                    locListener);
+
+            // get nearby pet sitters lat/long coordinates and place markers
+            Location temp = new Location(LocationManager.GPS_PROVIDER);
+
+            temp.setLatitude(42.387789);
+            temp.setLongitude(-71.219861);
+            findAndPlaceSitters(temp);
 
         } catch(SecurityException e) {
             Toast.makeText(this, "Security Exception - setup", Toast.LENGTH_LONG).show();

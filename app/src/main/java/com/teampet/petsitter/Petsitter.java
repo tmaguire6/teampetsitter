@@ -151,7 +151,7 @@ public class Petsitter {
         PaymentAcpt = paymentAcpt;
     }
 
-    public Petsitter(String ID_sitter, String Lname){
+    public Petsitter(String ID_sitter, String firstName, String lastName, String email, String phone, String background, String[] pictureUrls){
         super();
         this.ID_sitter = ID_sitter;
         this.Lname = Lname;

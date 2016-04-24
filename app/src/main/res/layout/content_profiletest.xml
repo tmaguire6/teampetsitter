@@ -1,11 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+    <!--android:background="#FFFFFFFF" >-->
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="QUANGS STUFF!" />
+    <TabHost
+        android:id="@android:id/tabhost"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
+        <!--android:layout_weight="1.0">-->
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="5dip"
+                android:paddingLeft="10dip">
+
+
+                <TextView
+                    android:tag="tab0"
+                    android:text="Info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:textSize="35dp"
+                    android:textStyle="bold"
+                    />
+
+                <TextView
+                    android:tag="tab1"
+                    android:text="Reviews"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    />
+
+                <TextView
+                    android:tag="tab2"
+                    android:text="Add"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent" />
+
+                <TextView
+                    android:tag="tab3"
+                    android:text="Photos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent" />
+
+            </TabWidget>
+
+
+            <!--<ImageView-->
+            <!--android:id="@+id/image"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:adjustViewBounds="true"-->
+            <!--android:scaleType="fitCenter"/>-->
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <TextView
+                    android:text=" Quang Nguyen \n\n I love dogs! I have 2 pitbulls at home and have 3 years of dog sitting experience. \n\n Availability: Friday 10am - 4pm, Sunday 12pm - 6pm \n\n Email: Nguyen_quan@bentley.edu \n Phone: 508-981-5341"
+                    android:clickable="true"
+                    android:autoLink="phone|email"
+                    android:maxLines="20"
+                    android:singleLine="false"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent" />
+
+                <!--<Button-->
+                <!--android:id="@+id/buttonSend"-->
+                <!--android:layout_width="fill_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="Send Text" />-->
+
+                <TextView
+                    android:text="Look at my reviews!"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent" />
+
+                <TextView
+                    android:text="Add me to your favorites!"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"/>
+
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/view_Pager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <TextView
+                    android:text="My Photos"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent" />
+
+            </FrameLayout>
+        </LinearLayout>
+    </TabHost>
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"/>
 
 </LinearLayout>
