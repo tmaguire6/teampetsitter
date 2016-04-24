@@ -61,6 +61,10 @@
             android:name=".TermsConditions"
             android:theme="@style/AppTheme.NoActionBar" />
 
+        <activity
+            android:name=".NearbySitters"
+            android:theme="@style/AppTheme.NoActionBar" />
+
     </application>
 
 </manifest>

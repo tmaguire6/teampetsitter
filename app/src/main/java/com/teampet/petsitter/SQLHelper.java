@@ -28,6 +28,9 @@ public class SQLHelper {
     public static final String TABLE_NAME_OWNER = "petowner";
     public static final String TABLE_NAME_PET = "pet";
     public static final String KEY_NAME_SITTER_ID = "ID_sitter";
+    public static final String KEY_NAME_FIRST_NAME = "Fname";
+    public static final String KEY_NAME_PHONE = "Phone";
+    public static final String KEY_NAME_EMAIL = "Email";
     public static final String KEY_NAME_LAST_NAME = "Lname";
     public static final String KEY_NAME_OWNER_ID = "ID_owner";
 
@@ -112,18 +115,22 @@ public class SQLHelper {
 
                     String ownerId = cursor.getString(cursor.getColumnIndex(KEY_NAME_OWNER_ID));
                     String lastName = cursor.getString(cursor.getColumnIndex(KEY_NAME_LAST_NAME));
-                    dataValues.add(new Petowner(ownerId, lastName));
+                    //dataValues.add(new Petowner(ownerId, lastName));
                     break;
                 case Pet:
 
                     String petId = cursor.getString(cursor.getColumnIndex(KEY_NAME_PET_ID));
                     String name = cursor.getString(cursor.getColumnIndex(KEY_NAME_NAME));
-                    dataValues.add(new Pet(petId, name));
+                    //dataValues.add(new Pet(petId, name));
                     break;
                 case Sitter:
                     String sitterId = result.getString(KEY_NAME_SITTER_ID);
                     String sitterLastName = result.getString(KEY_NAME_LAST_NAME);
-                    dataValues.add(new Petsitter(sitterId, sitterLastName));
+                    String sitterFirstName = result.getString(KEY_NAME_FIRST_NAME);
+                    String sitterPhone = result.getString(KEY_NAME_PHONE);
+                    String sitterEmail = result.getString(KEY_NAME_EMAIL);
+
+                    dataValues.add(new Petsitter(sitterId, sitterFirstName, sitterLastName, sitterPhone, sitterEmail, "", new String[]{""}));
 
                     break;
 

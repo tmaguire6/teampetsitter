@@ -4,17 +4,6 @@ package com.teampet.petsitter;
  * Created by Z on 4/10/2016.
  */
 public class Petowner {
-    private String ID_owner;
-    private String Fname;
-    private String Lname;
-    private String Phone;
-    private String Email;
-    private String Add_str;
-    private String Add_city;
-    private String Add_state;
-    private String Add_zip;
-    private String TypeOfPayment;
-
     public String getID_owner() {
         return ID_owner;
     }
@@ -23,20 +12,36 @@ public class Petowner {
         this.ID_owner = ID_owner;
     }
 
-    public String getFname() {
-        return Fname;
+    private String ID_owner;
+    private String LastName;
+    private String FirstName;
+    private String Phone;
+    private String Email;
+    private String BackgroundInfo;
+    private String[] PictureUrls;
+    private String Add_str;
+    private String Add_city;
+    private String Add_state;
+    private String Add_zip;
+
+
+
+    // these are all just generated getters and setters. will remove unused ones, as they could be easily generated later if required
+
+    public String getLastName() {
+        return LastName;
     }
 
-    public void setFname(String fname) {
-        Fname = fname;
+    public void setLastName(String lastName) {
+        LastName = lastName;
     }
 
-    public String getLname() {
-        return Lname;
+    public String getFirstName() {
+        return FirstName;
     }
 
-    public void setLname(String lname) {
-        Lname = lname;
+    public void setFirstName(String firstName) {
+        FirstName = firstName;
     }
 
     public String getPhone() {
@@ -53,6 +58,22 @@ public class Petowner {
 
     public void setEmail(String email) {
         Email = email;
+    }
+
+    public String getBackgroundInfo() {
+        return BackgroundInfo;
+    }
+
+    public void setBackgroundInfo(String backgroundInfo) {
+        BackgroundInfo = backgroundInfo;
+    }
+
+    public String[] getPictureUrls() {
+        return PictureUrls;
+    }
+
+    public void setPictureUrls(String[] pictureUrls) {
+        PictureUrls = pictureUrls;
     }
 
     public String getAdd_str() {
@@ -87,21 +108,17 @@ public class Petowner {
         Add_zip = add_zip;
     }
 
-    public String getTypeOfPayment() {
-        return TypeOfPayment;
-    }
-
-    public void setTypeOfPayment(String typeOfPayment) {
-        TypeOfPayment = typeOfPayment;
-    }
-    public Petowner(String ID_owner, String Lname){
+    // yes, pet owner and sitter are pretty much the same information. In future versions of the app this might be more differentiated.
+    public Petowner(String ID_owner, String firstName, String lastName, String email, String phone, String background, String[] pictureUrls){
         super();
         this.ID_owner = ID_owner;
-        this.Lname = Lname;
+        this.LastName = lastName;
+        this.FirstName = firstName;
+        this.Email = email;
+        this.Phone = phone;
+        this.BackgroundInfo = background;
+        this.PictureUrls = pictureUrls;
     }
 
-    public Petowner(String ID_owner){
-        super();
-        this.ID_owner = ID_owner;
-    }
+
 }

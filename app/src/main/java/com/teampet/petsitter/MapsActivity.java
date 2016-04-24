@@ -72,6 +72,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         dialog = ProgressDialog.show(this, "Locating you...",
                 "Working....", true);
 
+
+
     }
 
     @Override
@@ -210,8 +212,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             //Register for location updates using the named provider, and a pending intent.
             //10 second minimum interval between updates, 0 meters minimum distance between updates
-            locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0,
-                    locListener);
+//            locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0,
+//                    locListener);
+
+            // get nearby pet sitters lat/long coordinates and place markers
+            Location temp = new Location(LocationManager.GPS_PROVIDER);
+
+            temp.setLatitude(42.387789);
+            temp.setLongitude(-71.219861);
+            findAndPlaceSitters(temp);
 
         } catch(SecurityException e) {
             Toast.makeText(this, "Security Exception - setup", Toast.LENGTH_LONG).show();
