@@ -77,11 +77,11 @@
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent" />
 
-                <!--<Button-->
-                <!--android:id="@+id/buttonSend"-->
-                <!--android:layout_width="fill_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="Send Text" />-->
+                <Button
+                android:id="@+id/buttonSend"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Send Text" />
 
                 <TextView
                     android:text="Look at my reviews!"

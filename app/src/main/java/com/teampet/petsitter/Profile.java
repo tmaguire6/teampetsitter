@@ -1,11 +1,13 @@
 package com.teampet.petsitter;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +26,16 @@ import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
+import android.widget.Toast;
+import java.util.ArrayList;
+import android.view.KeyEvent;
+import android.view.View.OnClickListener;
+import android.support.v4.app.NotificationCompat;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.support.v7.app.ActionBarActivity;
+
 
 
 public class Profile extends AppCompatActivity {
@@ -31,35 +43,44 @@ public class Profile extends AppCompatActivity {
     private ImageView ImView;
     Button buttonSend;
 
-
     public void onCreate(Bundle savedInstanceState) {
-        // ...
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_profiletest);
-        //buttonSend = (Button) findViewById(R.id.buttonSend);
-//        buttonSend.setOnClickListener(new OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//
-//                try {
-//                    Intent sendIntent = new Intent(Intent.ACTION_VIEW);
-//                    sendIntent.putExtra("sms_body", "Hello there!");
-//                    sendIntent.setType("vnd.android-dir/mms-sms");
-//                    startActivity(sendIntent);
-//                    Toast.makeText(getApplicationContext(),
-//                             "Message Sent!",
-//                             Toast.LENGTH_SHORT).show();
+        buttonSend = (Button) findViewById(R.id.buttonSend);
 
-//
-//                } catch (Exception e) {
-//                    Toast.makeText(getApplicationContext(),
-//                            "SMS failed, please try again later!",
-//                            Toast.LENGTH_SHORT).show();
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
+        buttonSend.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                sendSMS();
+
+            }
+        });
+    }
+
+
+    protected void sendSMS() {
+        Log.i("Send SMS", "");
+        Intent smsIntent = new Intent(Intent.ACTION_VIEW);
+
+        smsIntent.setData(Uri.parse("smsto:"));
+        smsIntent.setType("vnd.android-dir/mms-sms");
+        smsIntent.putExtra("sms_body", "Hello there!");
+
+        try {
+            startActivity(smsIntent);
+            finish();
+            Toast.makeText(getApplicationContext(),
+                    "Message Sent!",
+                    Toast.LENGTH_SHORT).show();
+
+
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(),
+                    "SMS failed, please try again later!",
+                    Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
 
 
         //Here we are defining the Imageadapter object
@@ -109,10 +130,12 @@ public class Profile extends AppCompatActivity {
         }
     }
 
-//    @Override
-//                                                     public boolean onCreateOptionsMenu(Menu menu) { // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return true; }
+
+
+    @Override
+        public boolean onCreateOptionsMenu(Menu menu) { // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true; }
 //
 //    @Override public boolean onOptionsItemSelected(MenuItem item) { // Handle action bar item clicks here. The action bar will
 //        // automatically handle clicks on the Home/Up button, so long // as you specify a parent activity in AndroidManifest.xml.
