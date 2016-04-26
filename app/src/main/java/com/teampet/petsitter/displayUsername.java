@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class displayUsername extends AppCompatActivity{
     private EditText username;
-    private ArrayList<Petowner> petowners ;
+    private ArrayList<Object> petowners ;
     private ArrayList<String> ownerFirstName;
 
     @Override
@@ -22,14 +22,15 @@ public class displayUsername extends AppCompatActivity{
     }
     protected void displayUsername(){
         SQLHelper helper = new SQLHelper();
-        petowners = new ArrayList<Petowner>();
+        petowners = new ArrayList<Object>();
         //downcast the object to petowner
         ArrayList<Object> petO= helper.getDatabaseValues("select * from Petowner;", SQLHelper.TableType.Owner);
 
-
-        for (Petowner owner:petowners){
-            ownerFirstName.add(owner.getFirstName());
+        // add first names to list
+        for (Object owner:petowners){
+            ownerFirstName.add(((Petowner)owner).getFirstName());
         }
+        // grab a random first name to display
         int randomNumber = (int)Math.random()* (ownerFirstName.size()-1);
         String tempUsername = ownerFirstName.get(randomNumber);
         username.setText("Welcome back, " + tempUsername);
