@@ -25,8 +25,6 @@ public class NearbySitters extends AppCompatActivity implements TextToSpeech.OnI
     private ArrayList<String> stringList;
     private ArrayList<Petsitter> sitters;
     private ArrayAdapter<String> adapter;
-
-
     private TextToSpeech speaker;
     private static final String TAG = "TextToSpeech";
     //private int pos; //store the list position in the arraylist listview when user clicks on the list
@@ -50,11 +48,7 @@ public class NearbySitters extends AppCompatActivity implements TextToSpeech.OnI
 
         speaker = new TextToSpeech(this, this);
 
-
-
     }
-
-
 
     //--------------------------------------------------------------------------------------------//
     //speaker - txt to voice

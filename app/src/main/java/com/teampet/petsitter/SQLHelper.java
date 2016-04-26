@@ -27,15 +27,21 @@ public class SQLHelper {
     public static final String TABLE_NAME_SITTER = "petsitter";
     public static final String TABLE_NAME_OWNER = "petowner";
     public static final String TABLE_NAME_PET = "pet";
+
     public static final String KEY_NAME_SITTER_ID = "ID_sitter";
-    public static final String KEY_NAME_FIRST_NAME = "Fname";
-    public static final String KEY_NAME_PHONE = "Phone";
-    public static final String KEY_NAME_EMAIL = "Email";
-    public static final String KEY_NAME_LAST_NAME = "Lname";
+    public static final String KEY_NAME_SITTER_FIRST_NAME = "Fname";
+    public static final String KEY_NAME_SITTER_PHONE = "Phone";
+    public static final String KEY_NAME_SITTER_EMAIL = "Email";
+    public static final String KEY_NAME_SITTER_LAST_NAME = "Lname";
+
     public static final String KEY_NAME_OWNER_ID = "ID_owner";
+    public static final String KEY_NAME_OWNER_FIRST_NAME = "Fname";
+    public static final String KEY_NAME_OWNER_PHONE = "Phone";
+    public static final String KEY_NAME_OWNER_EMAIL = "Email";
+    public static final String KEY_NAME_OWNER_LAST_NAME = "Lname";
 
     public static final String KEY_NAME_PET_ID = "ID_pet";
-    public static final String KEY_NAME_NAME = "Name";
+    public static final String KEY_NAME_PET_NAME = "Name";
     public boolean done = false;
     private Thread thread;
 
@@ -111,24 +117,25 @@ public class SQLHelper {
         while (result.next()) {
             switch(type){
                 case Owner:
+                    String ownerId = result.getString(KEY_NAME_OWNER_ID);
+                    String ownerrLastName = result.getString(KEY_NAME_OWNER_LAST_NAME);
+                    String ownerFirstName = result.getString(KEY_NAME_OWNER_FIRST_NAME);
+                    String ownerPhone = result.getString(KEY_NAME_OWNER_PHONE);
+                    String ownerEmail = result.getString(KEY_NAME_OWNER_EMAIL);
 
-
-                    String ownerId = cursor.getString(cursor.getColumnIndex(KEY_NAME_OWNER_ID));
-                    String lastName = cursor.getString(cursor.getColumnIndex(KEY_NAME_LAST_NAME));
-                    //dataValues.add(new Petowner(ownerId, lastName));
+                    dataValues.add(new Petsitter(ownerId, ownerFirstName, ownerrLastName,ownerEmail,ownerPhone, "", new String[]{""}));
                     break;
                 case Pet:
-
                     String petId = cursor.getString(cursor.getColumnIndex(KEY_NAME_PET_ID));
-                    String name = cursor.getString(cursor.getColumnIndex(KEY_NAME_NAME));
+                    String name = cursor.getString(cursor.getColumnIndex(KEY_NAME_PET_NAME));
                     //dataValues.add(new Pet(petId, name));
                     break;
                 case Sitter:
                     String sitterId = result.getString(KEY_NAME_SITTER_ID);
-                    String sitterLastName = result.getString(KEY_NAME_LAST_NAME);
-                    String sitterFirstName = result.getString(KEY_NAME_FIRST_NAME);
-                    String sitterPhone = result.getString(KEY_NAME_PHONE);
-                    String sitterEmail = result.getString(KEY_NAME_EMAIL);
+                    String sitterLastName = result.getString(KEY_NAME_SITTER_LAST_NAME);
+                    String sitterFirstName = result.getString(KEY_NAME_SITTER_FIRST_NAME);
+                    String sitterPhone = result.getString(KEY_NAME_SITTER_PHONE);
+                    String sitterEmail = result.getString(KEY_NAME_SITTER_EMAIL);
 
                     dataValues.add(new Petsitter(sitterId, sitterFirstName, sitterLastName, sitterEmail, sitterPhone, "", new String[]{""}));
 

@@ -160,8 +160,6 @@ public class Petsitter implements Serializable{
         this.Email = email;
         this.Phone = phone;
 
-
-        this.Lname = Lname;
     }
 
     public Petsitter(String ID_sitter){

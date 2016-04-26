@@ -121,6 +121,10 @@ public class Petowner implements Serializable{
         this.BackgroundInfo = background;
         this.PictureUrls = pictureUrls;
     }
+    public Petowner(String ID_owner){
+        super();
+        this.ID_owner = ID_owner;
 
+    }
 
 }
