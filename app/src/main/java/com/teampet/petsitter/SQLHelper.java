@@ -32,6 +32,7 @@ public class SQLHelper {
     public static final String KEY_NAME_SITTER_LAST_NAME = "Lname";
     // used for both sitter and owner
     public static final String KEY_NAME_BACKGROUND = "Background";
+    public static final String KEY_NAME_PICTUREURL = "Picture";
 
     public static final String KEY_NAME_OWNER_ID = "ID_owner";
     public static final String KEY_NAME_OWNER_FIRST_NAME = "Fname";
@@ -56,10 +57,35 @@ public class SQLHelper {
 
 
 
+    public Petowner getCurrentOwnerAndPets(){
+        // could probably do this more effieciently in the future with one select, but this works too
+        // eventually we will have a login step to actually get the correct owner, for now just grab one for display purposes
+        query = "select * from petowner where ID_owner=28888994";
+        tableType = TableType.Owner;
+        // start thread to get data
+        thread = new Thread(background);
+        thread.start();
+
+        // wait for thread to finish
+        while(!done){}
+
+        Petowner owner = (Petowner)dataValues.get(0);
+
+        // now get pets
+        owner.setPets(getDatabaseValues("select * from pet where petOwnerID=28888994", TableType.Pet));
+        return owner;
+    }
 
     //query database and return ArrayList of all users
     public ArrayList<Object> getDatabaseValues (String queryString, TableType type) {
-
+        // reset just in case
+        dataValues = new ArrayList<>();
+        done = false;
+        // give things a second to reset
+        try{
+            Thread.sleep(1000);
+        }
+        catch(InterruptedException e){}
         // set query string
         query = queryString;
         tableType = type;
@@ -113,6 +139,8 @@ public class SQLHelper {
     }; //background
 
     private void FillOutArray(ResultSet result, TableType type) throws SQLException {
+        // reset data values
+        dataValues = new ArrayList<>();
         while (result.next()) {
             switch(type){
                 case Owner:
@@ -123,12 +151,13 @@ public class SQLHelper {
                     String ownerEmail = result.getString(KEY_NAME_OWNER_EMAIL);
                     String ownerBackground = result.getString(KEY_NAME_BACKGROUND);
 
-                    dataValues.add(new Petsitter(ownerId, ownerFirstName, ownerrLastName,ownerEmail,ownerPhone, ownerBackground, new String[]{""}));
+                    dataValues.add(new Petowner(ownerId, ownerFirstName, ownerrLastName,ownerEmail,ownerPhone, ownerBackground, new String[]{""}));
                     break;
                 case Pet:
-                    String petId = cursor.getString(cursor.getColumnIndex(KEY_NAME_PET_ID));
-                    String name = cursor.getString(cursor.getColumnIndex(KEY_NAME_PET_NAME));
-                    //dataValues.add(new Pet(petId, name));
+                    String petId = result.getString(KEY_NAME_PET_ID);
+                    String name = result.getString(KEY_NAME_PET_NAME);
+                    String picture = result.getString(KEY_NAME_PICTUREURL);
+                    dataValues.add(new Pet(petId, name, picture));
                     break;
                 case Sitter:
                     String sitterId = result.getString(KEY_NAME_SITTER_ID);
@@ -137,7 +166,8 @@ public class SQLHelper {
                     String sitterPhone = result.getString(KEY_NAME_SITTER_PHONE);
                     String sitterEmail = result.getString(KEY_NAME_SITTER_EMAIL);
                     String sitterBackground = result.getString(KEY_NAME_BACKGROUND);
-                    dataValues.add(new Petsitter(sitterId, sitterFirstName, sitterLastName, sitterEmail, sitterPhone, sitterBackground, new String[]{""}));
+                    String sitterPicture = result.getString(KEY_NAME_PICTUREURL);
+                    dataValues.add(new Petsitter(sitterId, sitterFirstName, sitterLastName, sitterEmail, sitterPhone, sitterBackground, sitterPicture));
 
                     break;
 

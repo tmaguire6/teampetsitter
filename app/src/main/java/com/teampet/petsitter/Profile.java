@@ -100,12 +100,12 @@ public class Profile extends AppCompatActivity {
                 sitter = (Petsitter)intent.getSerializableExtra("sitter");
                 // its a sitter, so build the profile string based on that
                 profileString = sitter.getFname() + " " + sitter.getLname() +
-                        "\n\n" + sitter.getBackground() + "\n\n" + "Email: " + sitter.getEmail() + "\n Phone: " + sitter.getPhone();
+                        "\n\n" + sitter.getBackground() + "\n\n" + "Email: " + sitter.getEmail() + "\nPhone: " + sitter.getPhone();
                 break;
             case Owner:
                 owner = (Petowner)intent.getSerializableExtra("owner");
                 profileString = owner.getFirstName() + " " + owner.getLastName() +
-                        "\n\n" + owner.getBackgroundInfo() + "\n\n" + "Email: " + owner.getEmail() + "\n Phone: " + owner.getPhone();
+                        "\n\n" + owner.getBackgroundInfo() + "\n\n" + "Email: " + owner.getEmail() + "\nPhone: " + owner.getPhone();
                 isOwner = true;
                 break;
         }
@@ -119,15 +119,20 @@ public class Profile extends AppCompatActivity {
 
         //Here we are defining the Imageadapter object
         ViewPager viewPager = (ViewPager) findViewById(R.id.view_Pager);
-        ImageAdapter adapter = new ImageAdapter(this);
+        ImageAdapter adapter;
+        if(isOwner){
+            adapter = new ImageAdapter(this, owner.getPetUrls());
+        }
+        else{
+            ArrayList<String> sitterPic = new ArrayList<>();
+            sitterPic.add(sitter.getPicture());
+            adapter = new ImageAdapter(this, sitterPic);
+        }
         viewPager.setAdapter(adapter); // Here we are passing and setting the adapter for the images
 
 
         // if
 
-        //Profile Picture
-        ImView = (ImageView) findViewById(R.id.image);
-        ImView.setImageResource(R.drawable.fbphoto);
 
         buttonSend.setOnClickListener(new View.OnClickListener() {
 
@@ -146,8 +151,9 @@ public class Profile extends AppCompatActivity {
         // if were here we know we're in sitter mode
         String phone = sitter.getPhone().replace("(","").replace(")","").replace("-","").replace(" ","");
 
+        // setup the sms intent so that it properly composes the text message and sends to the correct sitter
         smsIntent.setType("vnd.android-dir/mms-sms");
-        smsIntent.putExtra("sms_body", "Hello there!");
+        smsIntent.putExtra("sms_body", "Hi " + sitter.getFname() + "! I'm interested in making an appointment for pet sitting.");
         smsIntent.putExtra("address", phone);
 
 
@@ -156,8 +162,8 @@ public class Profile extends AppCompatActivity {
             startActivity(smsIntent);
             finish();
             Toast.makeText(getApplicationContext(),
-                    "Message Sent!",
-                    Toast.LENGTH_SHORT).show();
+                    "Connecting you with your sitter via text...",
+                    Toast.LENGTH_LONG).show();
 
 
         } catch (Exception e) {

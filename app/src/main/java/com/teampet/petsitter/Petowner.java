@@ -1,6 +1,8 @@
 package com.teampet.petsitter;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 /**
  * Created by Z on 4/10/2016.
@@ -28,8 +30,42 @@ public class Petowner implements Serializable{
 
 
 
-    // these are all just generated getters and setters. will remove unused ones, as they could be easily generated later if required
+    private ArrayList<Pet> Pets;
 
+
+    private String PictureUrl;
+
+
+
+    // these are all just generated getters and setters. will remove unused ones, as they could be easily generated later if required
+    public String getPictureUrl() {
+        return PictureUrl;
+    }
+
+    public void setPictureUrl(String pictureUrl) {
+        PictureUrl = pictureUrl;
+    }
+
+    public ArrayList<Pet> getPets() {
+        return Pets;
+    }
+
+    public void setPets(ArrayList<Object> pets) {
+        // handle casting
+        ArrayList<Pet> petList = new ArrayList<>();
+        for(Object p : pets){
+            petList.add((Pet)p);
+        }
+        Pets = petList;
+    }
+    // get the pet pic urls
+    public ArrayList<String> getPetUrls() {
+        ArrayList<String> urls = new ArrayList<>();
+        for(Pet p : Pets){
+            urls.add(p.getPictureUrl());
+        }
+        return urls;
+    }
     public String getLastName() {
         return LastName;
     }

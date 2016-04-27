@@ -12,7 +12,7 @@ public class Petsitter implements Serializable{
     private String Lname;
     private String Phone;
     private String Email;
-
+    private String Picture;
     private String Background;
     // alot of this is for future use
     private String Add_str;
@@ -27,6 +27,14 @@ public class Petsitter implements Serializable{
     private ArrayList<String> TypeOfSpec;
     private String PaymentAcpt;
 
+
+    public String getPicture() {
+        return Picture;
+    }
+
+    public void setPicture(String picture) {
+        Picture = picture;
+    }
 
     public String getBackground() {
         return Background;
@@ -165,7 +173,7 @@ public class Petsitter implements Serializable{
         PaymentAcpt = paymentAcpt;
     }
 
-    public Petsitter(String ID_sitter, String firstName, String lastName, String email, String phone, String background, String[] pictureUrls){
+    public Petsitter(String ID_sitter, String firstName, String lastName, String email, String phone, String background, String pictureUrl){
         super();
         this.ID_sitter = ID_sitter;
         this.Fname = firstName;
@@ -173,6 +181,7 @@ public class Petsitter implements Serializable{
         this.Email = email;
         this.Phone = phone;
         this.Background = background;
+        this.Picture = pictureUrl;
     }
 
     public Petsitter(String ID_sitter){

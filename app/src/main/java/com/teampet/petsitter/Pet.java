@@ -15,6 +15,15 @@ public class Pet implements Serializable{
     private String DOB;
     private double Weight;
     private String Comment;
+    private String PictureUrl;
+
+    public String getPictureUrl() {
+        return PictureUrl;
+    }
+
+    public void setPictureUrl(String pictureUrl) {
+        PictureUrl = pictureUrl;
+    }
 
     public String getID_pet() {
         return ID_pet;
@@ -87,10 +96,11 @@ public class Pet implements Serializable{
     public void setComment(String comment) {
         Comment = comment;
     }
-    public Pet(String ID_pet, String Name){
+    public Pet(String ID_pet, String Name, String pictureUrl){
         super();
         this.ID_pet = ID_pet;
         this.Name = Name;
+        this.PictureUrl = pictureUrl;
     }
 
     public Pet(String ID_pet){

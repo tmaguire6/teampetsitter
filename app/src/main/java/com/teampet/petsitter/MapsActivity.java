@@ -14,6 +14,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -55,8 +56,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private ImageView ImView;
     Button buttonSend;
     private ArrayList<Petsitter> foundSitters;
-    private Petowner owner = new Petowner("12345", "James", "Pepe", "jpepe@bentley.edu", "(555) 555-5555", "Some Background Nonsense", new String[]{""});
+    private Petowner owner;
 
+    SQLHelper helper = new SQLHelper();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +74,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
 
+        // get the owner
+        owner = helper.getCurrentOwnerAndPets();
+
+
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -81,8 +88,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+//        // set the owner name on the menu
+//        ownerName = (EditText)findViewById(R.id.username);
+//        ownerName.setText(owner.getFirstName() + " " + owner.getLastName());
+
         dialog = ProgressDialog.show(this, "Locating you...",
-                "Working....", true);
+                "Please be patient....", true);
 
 
 
@@ -131,7 +142,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (id == R.id.nav_profile) {
             // Handle the profile action
             Intent profile = new Intent(MapsActivity.this, Profile.class);
-            // todo: fix this to actually grab correct sitter
+            // todo: fix this to actually grab correct owner
             profile.putExtra("type", SQLHelper.TableType.Owner);
             profile.putExtra("owner", owner);
             startActivity(profile);
@@ -203,12 +214,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     public boolean onMarkerClick(Marker m) {
                         String title = m.getTitle();
-                        String snip = m.getSnippet();
-                        Toast.makeText(getApplicationContext(), title + "\n" + snip, Toast.LENGTH_LONG).show();
+                        // id stuffed into snippet
+                        String id = m.getSnippet();
+                        // display name
+                        Toast.makeText(getApplicationContext(), title, Toast.LENGTH_LONG).show();
                         // Handle the profile action
                         Intent profile = new Intent(MapsActivity.this, Profile.class);
-                        // todo: fix this to actually grab correct sitter
-                        profile.putExtra("sitter", foundSitters.get(0));
+                        // initialize found sitter to the first one
+                        Petsitter foundSitter = foundSitters.get(0);
+                        for (Petsitter x : foundSitters) {
+                            // now really find them
+                            if (x.getID_sitter().equals(id)) {
+                                foundSitter = x;
+                            }
+                        }
+                        profile.putExtra("sitter", foundSitter);
                         profile.putExtra("type", SQLHelper.TableType.Sitter);
                         startActivity(profile);
 
@@ -276,7 +296,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void findAndPlaceSitters(Location loc) {
         // Obviously in real life, these would have fixed locations. To make this easier to use with our fake data, assign them
         // locations that place them roughly around the current location instead.
-        SQLHelper helper = new SQLHelper();
+
         ArrayList<Object> sitters = helper.getDatabaseValues("select * from petsitter;", SQLHelper.TableType.Sitter);
         ArrayList<Location> nearbyLocations = new ArrayList<>();
 
@@ -327,12 +347,27 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.addMarker(new MarkerOptions()
                             .position(new LatLng(x.getLatitude(), x.getLongitude()))
                             .title(sitter.getFname() + " " + sitter.getLname())
-                            .snippet(sitter.getEmail())
+                            .snippet(sitter.getID_sitter())
+
 
             );
         }
         dialog.dismiss();
 
+        // send a notification with the located sitters
+        sendNotification(foundSitters);
+
+        try {
+            locManager.removeUpdates(locListener);
+        }
+        catch(SecurityException e){
+            Log.e("LocationException", e.getMessage());
+        }
+
+
+    }
+
+    private void sendNotification(ArrayList<Petsitter> sitters) {
         notification = new NotificationCompat.Builder(this);
         notification.setAutoCancel(true);
 
@@ -357,16 +392,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         //Builds notification and sends out notification
         NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         nm.notify(uniqueNotificationID, notification.build());
-
-        try {
-            locManager.removeUpdates(locListener);
-        }
-        catch(SecurityException e){
-            Log.e("LocationException", e.getMessage());
-        }
-
-
     }
+
     //testing 2  - Quang Nguyen
     //stop updates
     public void onStop() {
