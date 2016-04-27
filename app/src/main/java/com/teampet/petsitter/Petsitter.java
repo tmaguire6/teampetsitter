@@ -12,6 +12,9 @@ public class Petsitter implements Serializable{
     private String Lname;
     private String Phone;
     private String Email;
+
+    private String Background;
+    // alot of this is for future use
     private String Add_str;
     private String Add_city;
     private String Add_state;
@@ -23,6 +26,16 @@ public class Petsitter implements Serializable{
     private ArrayList<String> RegionAva;
     private ArrayList<String> TypeOfSpec;
     private String PaymentAcpt;
+
+
+    public String getBackground() {
+        return Background;
+    }
+
+    public void setBackground(String background) {
+        Background = background;
+    }
+
 
     public String getID_sitter() {
         return ID_sitter;
@@ -159,7 +172,7 @@ public class Petsitter implements Serializable{
         this.Lname = lastName;
         this.Email = email;
         this.Phone = phone;
-
+        this.Background = background;
     }
 
     public Petsitter(String ID_sitter){

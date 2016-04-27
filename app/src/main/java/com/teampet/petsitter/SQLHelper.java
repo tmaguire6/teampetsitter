@@ -19,20 +19,19 @@ import java.util.Objects;
 /** Helper to the database, manages versions and creation */
 public class SQLHelper {
 
+    // used to differentiate between the three types all over the application
     public enum TableType{
         Pet, Owner, Sitter
     }
-    public static final String DATABASE_NAME = "petfinderdb.db";
-    public static final int DATABASE_VERSION = 4;
-    public static final String TABLE_NAME_SITTER = "petsitter";
-    public static final String TABLE_NAME_OWNER = "petowner";
-    public static final String TABLE_NAME_PET = "pet";
+
 
     public static final String KEY_NAME_SITTER_ID = "ID_sitter";
     public static final String KEY_NAME_SITTER_FIRST_NAME = "Fname";
     public static final String KEY_NAME_SITTER_PHONE = "Phone";
     public static final String KEY_NAME_SITTER_EMAIL = "Email";
     public static final String KEY_NAME_SITTER_LAST_NAME = "Lname";
+    // used for both sitter and owner
+    public static final String KEY_NAME_BACKGROUND = "Background";
 
     public static final String KEY_NAME_OWNER_ID = "ID_owner";
     public static final String KEY_NAME_OWNER_FIRST_NAME = "Fname";
@@ -122,8 +121,9 @@ public class SQLHelper {
                     String ownerFirstName = result.getString(KEY_NAME_OWNER_FIRST_NAME);
                     String ownerPhone = result.getString(KEY_NAME_OWNER_PHONE);
                     String ownerEmail = result.getString(KEY_NAME_OWNER_EMAIL);
+                    String ownerBackground = result.getString(KEY_NAME_BACKGROUND);
 
-                    dataValues.add(new Petsitter(ownerId, ownerFirstName, ownerrLastName,ownerEmail,ownerPhone, "", new String[]{""}));
+                    dataValues.add(new Petsitter(ownerId, ownerFirstName, ownerrLastName,ownerEmail,ownerPhone, ownerBackground, new String[]{""}));
                     break;
                 case Pet:
                     String petId = cursor.getString(cursor.getColumnIndex(KEY_NAME_PET_ID));
@@ -136,8 +136,8 @@ public class SQLHelper {
                     String sitterFirstName = result.getString(KEY_NAME_SITTER_FIRST_NAME);
                     String sitterPhone = result.getString(KEY_NAME_SITTER_PHONE);
                     String sitterEmail = result.getString(KEY_NAME_SITTER_EMAIL);
-
-                    dataValues.add(new Petsitter(sitterId, sitterFirstName, sitterLastName, sitterEmail, sitterPhone, "", new String[]{""}));
+                    String sitterBackground = result.getString(KEY_NAME_BACKGROUND);
+                    dataValues.add(new Petsitter(sitterId, sitterFirstName, sitterLastName, sitterEmail, sitterPhone, sitterBackground, new String[]{""}));
 
                     break;
 

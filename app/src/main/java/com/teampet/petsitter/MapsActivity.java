@@ -84,30 +84,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         dialog = ProgressDialog.show(this, "Locating you...",
                 "Working....", true);
 
-        notification = new NotificationCompat.Builder(this);
-        notification.setAutoCancel(true);
 
-        //Build the notification
-        notification.setSmallIcon(R.drawable.notificationpic);
-        notification.setTicker("You have a new message on PetSitter");
-        notification.setWhen(System.currentTimeMillis());
-        notification.setContentTitle("MESSAGE!!");
-        notification.setContentText("Body text for message");
-        //Creates an explicit intent for an Activity in app
-        Intent intent = new Intent(this, MapsActivity.class);
-        //stack builder object will contain an artificial back stack for the started activity
-        //Ensures that navigating backward from Activity leads out of app to Home screen
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        //Adds the back stack for the Intent (but not Intent itself)
-        stackBuilder.addParentStack(MapsActivity.class);
-        //Adds the Intent that starts the Activity to the top of the stack
-        stackBuilder.addNextIntent(intent);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        notification.setContentIntent(pendingIntent);
-
-        //Builds notification and sends out notification
-        NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        nm.notify(uniqueNotificationID, notification.build());
 
 
 
@@ -215,7 +192,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
 
-        // Add a marker at Bentley and move the camera
 
         //choose map type
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
@@ -253,15 +229,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             //Register for location updates using the named provider, and a pending intent.
             //10 second minimum interval between updates, 0 meters minimum distance between updates
-//            locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0,
-//                    locListener);
+            locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, locListener);
 
-            // get nearby pet sitters lat/long coordinates and place markers
-            Location temp = new Location(LocationManager.GPS_PROVIDER);
 
-            temp.setLatitude(42.387789);
-            temp.setLongitude(-71.219861);
-            findAndPlaceSitters(temp);
 
         } catch(SecurityException e) {
             Toast.makeText(this, "Security Exception - setup", Toast.LENGTH_LONG).show();
@@ -362,6 +332,31 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             );
         }
         dialog.dismiss();
+
+        notification = new NotificationCompat.Builder(this);
+        notification.setAutoCancel(true);
+
+        //Build a notification that will tell them how many sitters we found
+        notification.setSmallIcon(R.drawable.notificationpic);
+        notification.setTicker("We found some Pet Sitters near you!");
+        notification.setWhen(System.currentTimeMillis());
+        notification.setContentTitle("Sitters Found!");
+        notification.setContentText("Found " + sitters.size() + " Pet Sitters near you!");
+        //Creates an explicit intent for an Activity in app
+        Intent intent = new Intent(this, MapsActivity.class);
+        //stack builder object will contain an artificial back stack for the started activity
+        //Ensures that navigating backward from Activity leads out of app to Home screen
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        //Adds the back stack for the Intent (but not Intent itself)
+        stackBuilder.addParentStack(MapsActivity.class);
+        //Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(intent);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        notification.setContentIntent(pendingIntent);
+
+        //Builds notification and sends out notification
+        NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        nm.notify(uniqueNotificationID, notification.build());
 
         try {
             locManager.removeUpdates(locListener);

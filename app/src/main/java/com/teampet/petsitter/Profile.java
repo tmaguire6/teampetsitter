@@ -46,31 +46,89 @@ public class Profile extends AppCompatActivity {
     Button buttonSend;
     Petsitter sitter;
     Petowner owner;
+    private TextView textInfo;
+    private TabHost tabs;
+    // if false, then this is a sitter profile
+    boolean isOwner = false;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_profiletest);
         buttonSend = (Button) findViewById(R.id.buttonSend);
 
-//
-//                } catch (Exception e) {
-//                    Toast.makeText(getApplicationContext(),
-//                            "SMS failed, please try again later!",
-//                            Toast.LENGTH_SHORT).show();
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
+
+        // initialize the tabs
+        tabs=(TabHost)findViewById(R.id.tabHost);
+        tabs.setup();
+
+        TabHost.TabSpec spec;
+
+        // Initialize a TabSpec for tab1 and add it to the TabHost
+        spec=tabs.newTabSpec("tag1");	//create new tab specification
+        spec.setContent(R.id.tab1);    //add tab view content
+        spec.setIndicator("Info");    //put text on tab
+        tabs.addTab(spec);             //put tab in TabHost container
+
+
+
+        //-------------------------------------------------------------------------------------
+
+        // Initialize a TabSpec for tab2 and add it to the TabHost
+        spec=tabs.newTabSpec("tag2");		//create new tab specification
+        spec.setContent(R.id.tab2);			//add view tab content
+        spec.setIndicator("Reviews");
+        tabs.addTab(spec);					//put tab in TabHost container
+
+
+
+        //-------------------------------------------------------------------------------------
+
+        // Initialize a TabSpec for tab3 and add it to the TabHost
+        spec=tabs.newTabSpec("tag3");		//create new tab specification
+        spec.setContent(R.id.tab3);			//add tab view content
+        spec.setIndicator("Photos");			//put text on tab
+        tabs.addTab(spec); 					//put tab in TabHost container
+
+        // get intent to get data about a sitter or owner
         Intent intent = getIntent();
+        // also get the text view
+        textInfo = (TextView) findViewById(R.id.profileText);
         SQLHelper.TableType type = (SQLHelper.TableType)intent.getSerializableExtra("type");
+        String profileString = "";
         switch (type){
             case Sitter:
                 sitter = (Petsitter)intent.getSerializableExtra("sitter");
+                // its a sitter, so build the profile string based on that
+                profileString = sitter.getFname() + " " + sitter.getLname() +
+                        "\n\n" + sitter.getBackground() + "\n\n" + "Email: " + sitter.getEmail() + "\n Phone: " + sitter.getPhone();
                 break;
             case Owner:
                 owner = (Petowner)intent.getSerializableExtra("owner");
+                profileString = owner.getFirstName() + " " + owner.getLastName() +
+                        "\n\n" + owner.getBackgroundInfo() + "\n\n" + "Email: " + owner.getEmail() + "\n Phone: " + owner.getPhone();
+                isOwner = true;
                 break;
         }
+        // set the info text
+        textInfo.setText(profileString);
+
+        // if this is an owner, turn the send text off
+        if(isOwner){
+            buttonSend.setVisibility(View.GONE);
+        }
+
+        //Here we are defining the Imageadapter object
+        ViewPager viewPager = (ViewPager) findViewById(R.id.view_Pager);
+        ImageAdapter adapter = new ImageAdapter(this);
+        viewPager.setAdapter(adapter); // Here we are passing and setting the adapter for the images
+
+
+        // if
+
+        //Profile Picture
+        ImView = (ImageView) findViewById(R.id.image);
+        ImView.setImageResource(R.drawable.fbphoto);
+
         buttonSend.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -85,10 +143,14 @@ public class Profile extends AppCompatActivity {
     protected void sendSMS() {
         Log.i("Send SMS", "");
         Intent smsIntent = new Intent(Intent.ACTION_VIEW);
+        // if were here we know we're in sitter mode
+        String phone = sitter.getPhone().replace("(","").replace(")","").replace("-","").replace(" ","");
 
-        smsIntent.setData(Uri.parse("smsto:"));
         smsIntent.setType("vnd.android-dir/mms-sms");
         smsIntent.putExtra("sms_body", "Hello there!");
+        smsIntent.putExtra("address", phone);
+
+
 
         try {
             startActivity(smsIntent);
@@ -106,51 +168,12 @@ public class Profile extends AppCompatActivity {
         }
 
 
-        //Here we are defining the Imageadapter object
-        ViewPager viewPager = (ViewPager) findViewById(R.id.view_Pager);
-        ImageAdapter adapter = new ImageAdapter(this);
-        viewPager.setAdapter(adapter); // Here we are passing and setting the adapter for the images
 
-        TabHost tabHost = (TabHost) findViewById(android.R.id.tabhost);
-        tabHost.setup();
 
-        //Profile Picture
-        ImView = (ImageView) findViewById(R.id.image);
-        ImView.setImageResource(R.drawable.fbphoto);
 
-        final TabWidget tabWidget = tabHost.getTabWidget();
-        final FrameLayout tabContent = tabHost.getTabContentView();
 
-        // Get the original tab textviews and remove them from the viewgroup.
-        TextView[] originalTextViews = new TextView[tabWidget.getTabCount()];
-        for (int index = 0; index < tabWidget.getTabCount(); index++) {
-            originalTextViews[index] = (TextView) tabWidget.getChildTabViewAt(index);
-        }
-        tabWidget.removeAllViews();
 
-        // Ensure that all tab content childs are not visible at startup.
-        for (int index = 0; index < tabContent.getChildCount(); index++) {
-            tabContent.getChildAt(index).setVisibility(View.GONE);
-        }
 
-        // Create the tabspec based on the textview childs in the xml file.
-        for (int index = 0; index < originalTextViews.length; index++) {
-            final TextView tabWidgetTextView = originalTextViews[index];
-            final View tabContentView = tabContent.getChildAt(index);
-            TabHost.TabSpec tabSpec = tabHost.newTabSpec((String) tabWidgetTextView.getTag());
-            tabSpec.setContent(new TabHost.TabContentFactory() {
-                @Override
-                public View createTabContent(String tag) {
-                    return tabContentView;
-                }
-            });
-            if (tabWidgetTextView.getBackground() == null) {
-                tabSpec.setIndicator(tabWidgetTextView.getText());
-            } else {
-                tabSpec.setIndicator(tabWidgetTextView.getText(), tabWidgetTextView.getBackground());
-            }
-            tabHost.addTab(tabSpec);
-        }
     }
 
 
