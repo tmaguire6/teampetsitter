@@ -17,6 +17,7 @@ public class Pet implements Serializable{
     private String Comment;
     private String PictureUrl;
 
+    // all getters/setters. some aren't used yet
     public String getPictureUrl() {
         return PictureUrl;
     }

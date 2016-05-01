@@ -52,6 +52,7 @@ public class Profile extends AppCompatActivity {
     boolean isOwner = false;
 
     public void onCreate(Bundle savedInstanceState) {
+        try{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_profiletest);
         buttonSend = (Button) findViewById(R.id.buttonSend);
@@ -103,6 +104,7 @@ public class Profile extends AppCompatActivity {
                         "\n\n" + sitter.getBackground() + "\n\n" + "Email: " + sitter.getEmail() + "\nPhone: " + sitter.getPhone();
                 break;
             case Owner:
+                // else its an owner so get that
                 owner = (Petowner)intent.getSerializableExtra("owner");
                 profileString = owner.getFirstName() + " " + owner.getLastName() +
                         "\n\n" + owner.getBackgroundInfo() + "\n\n" + "Email: " + owner.getEmail() + "\nPhone: " + owner.getPhone();
@@ -121,9 +123,11 @@ public class Profile extends AppCompatActivity {
         ViewPager viewPager = (ViewPager) findViewById(R.id.view_Pager);
         ImageAdapter adapter;
         if(isOwner){
+            // for owner load pets
             adapter = new ImageAdapter(this, owner.getPetUrls());
         }
         else{
+            // otherwise, load just the sitters picture (add to array so it compiles)
             ArrayList<String> sitterPic = new ArrayList<>();
             sitterPic.add(sitter.getPicture());
             adapter = new ImageAdapter(this, sitterPic);
@@ -131,7 +135,7 @@ public class Profile extends AppCompatActivity {
         viewPager.setAdapter(adapter); // Here we are passing and setting the adapter for the images
 
 
-        // if
+
 
 
         buttonSend.setOnClickListener(new View.OnClickListener() {
@@ -142,11 +146,17 @@ public class Profile extends AppCompatActivity {
 
             }
         });
+        }
+        catch(Exception e){
+            // something went wrong with the profile load, log it
+            Log.e("ProfileLoad", e.getMessage(), e);
+        }
+
     }
 
 
     protected void sendSMS() {
-        Log.i("Send SMS", "");
+        // start an intent for the sms sending
         Intent smsIntent = new Intent(Intent.ACTION_VIEW);
         // if were here we know we're in sitter mode
         String phone = sitter.getPhone().replace("(","").replace(")","").replace("-","").replace(" ","");
@@ -169,8 +179,8 @@ public class Profile extends AppCompatActivity {
         } catch (Exception e) {
             Toast.makeText(getApplicationContext(),
                     "SMS failed, please try again later!",
-                    Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
+                    Toast.LENGTH_LONG).show();
+            Log.e("SendSmsFailed", e.getMessage(), e);
         }
 
 

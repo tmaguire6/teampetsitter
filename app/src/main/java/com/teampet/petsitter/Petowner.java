@@ -66,6 +66,8 @@ public class Petowner implements Serializable{
         }
         return urls;
     }
+
+    // again, some of these aren't used yet
     public String getLastName() {
         return LastName;
     }

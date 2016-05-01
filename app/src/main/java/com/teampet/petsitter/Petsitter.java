@@ -27,6 +27,7 @@ public class Petsitter implements Serializable{
     private ArrayList<String> TypeOfSpec;
     private String PaymentAcpt;
 
+    // also some are not used yet, but should be available
 
     public String getPicture() {
         return Picture;

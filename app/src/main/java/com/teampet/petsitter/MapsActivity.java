@@ -45,10 +45,10 @@ import java.util.Random;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener{
 
+    // instantiate objects
     LocationManager  locManager;
     LocationListener locListener;
     private GoogleMap mMap;
-    private static final LatLng BENTLEY = new LatLng(42.3889167, -71.2208033);
     private static final float zoom = 14.0f;
     private ProgressDialog dialog;
     NotificationCompat.Builder notification;
@@ -57,7 +57,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     Button buttonSend;
     private ArrayList<Petsitter> foundSitters;
     private Petowner owner;
-
+    // get a reference to the sql helper
     SQLHelper helper = new SQLHelper();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,20 +78,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         owner = helper.getCurrentOwnerAndPets();
 
 
-
+        // more menu logic
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-
+        // make it actually able to navigate
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-//        // set the owner name on the menu
-//        ownerName = (EditText)findViewById(R.id.username);
-//        ownerName.setText(owner.getFirstName() + " " + owner.getLastName());
 
+        // start the dialog
         dialog = ProgressDialog.show(this, "Locating you...",
                 "Please be patient....", true);
 
@@ -100,7 +98,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     }
-
+    // override the navigation view methods, to close the slider if back is pressed and its open.
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -111,6 +109,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+    // inflate the menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -118,6 +117,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return true;
     }
 
+    // handle the options item selections
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -228,6 +228,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 foundSitter = x;
                             }
                         }
+                        // put the sitter on the intent, and navigate to the profile
                         profile.putExtra("sitter", foundSitter);
                         profile.putExtra("type", SQLHelper.TableType.Sitter);
                         startActivity(profile);
@@ -264,11 +265,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         @Override
         public void onLocationChanged(Location loc) {
 
+            // we are only going to do this once, after that they can use the built in button
             double latitude = loc.getLatitude();
             double longitude = loc.getLongitude();
 
             LatLng position = new LatLng(latitude, longitude);
 
+
+            // zoom on the current location
             mMap.clear();
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, zoom));
 
@@ -276,6 +280,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             findAndPlaceSitters(loc);
         }
 
+        // basic map overrides to provide info to the user in case GPS is disabled
         @Override
         public void onProviderDisabled(String provider) {
             Toast.makeText(getApplicationContext(), "Gps Disabled",
@@ -292,6 +297,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         public void onStatusChanged(String provider, int status, Bundle extras) { }
 
     }// End MyLocationListener
+
 
     private void findAndPlaceSitters(Location loc) {
         // Obviously in real life, these would have fixed locations. To make this easier to use with our fake data, assign them
@@ -343,6 +349,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             // add sitter to list for use in other activities
             Petsitter sitter = (Petsitter)sitters.get(randomPosition);
 
+            // add to the array so we can use it elsewhere, and add the marker.
+            // shove the id into the "snippet"
             foundSitters.add(sitter);
             mMap.addMarker(new MarkerOptions()
                             .position(new LatLng(x.getLatitude(), x.getLongitude()))
@@ -352,6 +360,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             );
         }
+        // stop the dialog
         dialog.dismiss();
 
         // send a notification with the located sitters
@@ -394,7 +403,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         nm.notify(uniqueNotificationID, notification.build());
     }
 
-    //testing 2  - Quang Nguyen
+
     //stop updates
     public void onStop() {
         super.onStop();

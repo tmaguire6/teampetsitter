@@ -141,6 +141,7 @@ public class SQLHelper {
     private void FillOutArray(ResultSet result, TableType type) throws SQLException {
         // reset data values
         dataValues = new ArrayList<>();
+        // load all the values based on what type it is, and add it to the object array to be returned
         while (result.next()) {
             switch(type){
                 case Owner:

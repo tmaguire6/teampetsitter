@@ -19,6 +19,7 @@ import java.util.ArrayList;
 
 public class ImageAdapter extends PagerAdapter {
 
+    // instantiate variables
     Context context;
     String url;
     Bitmap bm;
@@ -26,12 +27,13 @@ public class ImageAdapter extends PagerAdapter {
     ArrayList<String> petImages;
     boolean done = false;
 
-
+    // imageAdapter constructor, i know it always says petImages, but also includes profile pictures
     ImageAdapter(Context context, ArrayList<String> urls) {
         this.context = context;
         petImages = urls;
     }
 
+    // override the various pager adapter methods, this is what lets us slide through the pictures
     @Override
     public int getCount() {
         return petImages.size();
@@ -39,7 +41,7 @@ public class ImageAdapter extends PagerAdapter {
 
     @Override
     public boolean isViewFromObject(View view, Object object) {
-        return view ==((ImageView) object);
+        return view ==(object);
     }
 
     @Override
@@ -47,7 +49,7 @@ public class ImageAdapter extends PagerAdapter {
         ImageView imageView = new ImageView(context);
 
         imageView.setImageBitmap(getImageBitmap("http://" + petImages.get(position)));
-        ((ViewPager) container).addView(imageView, 0);
+        container.addView(imageView, 0);
         return imageView;
     }
 
@@ -65,7 +67,7 @@ public class ImageAdapter extends PagerAdapter {
 
 
 
-        // start thread to get data
+        // start thread to get data. this has to be in a background thread or else Android will complain
         thread = new Thread(background);
         thread.start();
 
@@ -78,9 +80,12 @@ public class ImageAdapter extends PagerAdapter {
     private Runnable background = new Runnable() {
         public void run(){
             try {
+                // parse the url into a URL object
                 URL aURL = new URL(url);
+                //open a connection using the url
                 URLConnection conn = aURL.openConnection();
                 conn.connect();
+                // simply download the body of the request and parse it as a bitmap, closing afterwards
                 InputStream is = conn.getInputStream();
                 BufferedInputStream bis = new BufferedInputStream(is);
                 bm = BitmapFactory.decodeStream(bis);
